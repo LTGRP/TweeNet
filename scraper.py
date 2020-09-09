@@ -32,8 +32,8 @@ try:
     with open('data.json', 'w') as f:
         json.dump(adjacency_list, f, indent=4)
 
-except tweepy.TweepError:
-    print("tweepy.TweepError=", tweepy.TweepError)
+except tweepy.TweepError as err:
+    print(err)
 
 except Exception:
     e = sys.exc_info()[0]
