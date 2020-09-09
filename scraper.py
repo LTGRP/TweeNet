@@ -1,4 +1,5 @@
 import sys
+import json
 import tweepy
 from keys import key
 
@@ -7,30 +8,29 @@ API_SECRET = key['api_secret']
 ACCESS_TOKEN = key['access_token']
 ACCESS_TOKEN_SECRET = key['access_token_secret']
 
+auth = tweepy.OAuthHandler(API_KEY, API_SECRET)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+api = tweepy.API(auth, wait_on_rate_limit=True,
+                 wait_on_rate_limit_notify=True,
+                 compression=True)
+
 target = "NASA"  # target account screen name
+target_info = api.get_user(screen_name=target)
+
+adjacency_list = {}
+adjacency_list[target_info.id] = []
 
 try:
-    auth = tweepy.OAuthHandler(API_KEY, API_SECRET)
-    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    for page in tweepy.Cursor(api.friends_ids, id=target_info.id).pages():
+        adjacency_list[target_info.id] += page
 
-    api = tweepy.API(auth, wait_on_rate_limit=True,
-                     wait_on_rate_limit_notify=True,
-                     compression=True)
+    for uid in adjacency_list[target_info.id]:
+        adjacency_list[uid] = []
+        for page in tweepy.Cursor(api.friends_ids, id=uid).pages():
+            adjacency_list[target_info.id] += page
 
-    friends_list = []
-    for page in tweepy.Cursor(api.friends_ids, screen_name=target).pages():
-        friends_list += page
-
-    for sid in friends_list:
-        for tid in friends_list:
-            if sid != tid:
-                # friendship between two account
-                friendship = api.show_friendship(source_id=sid, target_id=tid)
-                if friendship[0].following:
-                    print(sid, '-->', tid, '(friends)')
-                else:
-                    print(sid, '-->', tid, '(not friends)')
-
+    with open('data.json', 'w') as f:
+        json.dump(adjacency_list, f, indent=4)
 
 except tweepy.TweepError:
     print("tweepy.TweepError=", tweepy.TweepError)
