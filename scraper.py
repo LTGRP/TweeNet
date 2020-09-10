@@ -1,4 +1,5 @@
 import sys
+import time
 import json
 import tweepy
 from keys import key
@@ -33,6 +34,7 @@ try:
         json.dump(adjacency_list, f, indent=4)
 
 except tweepy.TweepError as err:
+    time.sleep(300)
     print(err)
 
 except Exception:
