@@ -23,14 +23,16 @@ def connection_handler(cursor):
     # handle connection error when retrying requests
     while True:
         try:
-            return cursor.next()
+            yield cursor.next()
         except tweepy.TweepError as e:
             print(e)
+        except StopIteration:
+            break
 
 
 def lookup_friend_list(api, id):
     adjacency_list = []
-    for friend in connection_handler(tweepy.Cursor(api.friends, id=id).pages()):
+    for friend in connection_handler(tweepy.Cursor(api.friends, id=id).items()):
         user_info = {
                 "id": friend.id,
                 "screen_name": friend.screen_name,
