@@ -18,24 +18,34 @@ api = tweepy.API(auth, wait_on_rate_limit=True,
 target = "SpaceX"  # target account screen name
 target_info = api.get_user(screen_name=target)
 
-adjacency_list = {}
-adjacency_list[target_info.id] = []
 
-for page in tweepy.Cursor(api.friends_ids, id=target_info.id).pages():
-    adjacency_list[target_info.id] += page
+def connection_handler(cursor):
+    # handle connection error when retrying requests
+    while True:
+        try:
+            return cursor.next()
+        except tweepy.TweepError as e:
+            print(e)
 
-progress = 1
-total = len(adjacency_list[target_info.id])
-for uid in adjacency_list[target_info.id]:
-    print("Scrapping progress: " + str(progress) + "/" + str(total))
-    adjacency_list[uid] = []
-    try:
-        for page in tweepy.Cursor(api.friends_ids, id=uid).pages():
-            adjacency_list[uid] += page
-    except tweepy.TweepError as err:
-        print(err)
-        continue
-    progress += 1
+
+def lookup_friend_list(api, id):
+    adjacency_list = []
+    for friend in connection_handler(tweepy.Cursor(api.friends, id=id).pages()):
+        user_info = {
+                "id": friend.id,
+                "screen_name": friend.screen_name,
+            }
+        adjacency_list.append(user_info)
+    return adjacency_list
+
+
+result = {}
+result[target] = lookup_friend_list(api, target_info.id)
+
+total = len(result[target])
+for i, user in enumerate(result[target]):
+    print("Looking up " + user["screen_name"] + "'s friends (" + str(i+1) + "/" + str(total) + ")")
+    result[user["screen_name"]] = lookup_friend_list(api, user["id"])
 
 with open('data.json', 'w') as f:
-    json.dump(adjacency_list, f, indent=4)
+    json.dump(result, f, indent=4)
