@@ -15,28 +15,27 @@ api = tweepy.API(auth, wait_on_rate_limit=True,
                  wait_on_rate_limit_notify=True,
                  compression=True)
 
-target = "NASA"  # target account screen name
+target = "SpaceX"  # target account screen name
 target_info = api.get_user(screen_name=target)
 
 adjacency_list = {}
 adjacency_list[target_info.id] = []
 
-try:
-    for page in tweepy.Cursor(api.friends_ids, id=target_info.id).pages():
-        adjacency_list[target_info.id] += page
+for page in tweepy.Cursor(api.friends_ids, id=target_info.id).pages():
+    adjacency_list[target_info.id] += page
 
-    for uid in adjacency_list[target_info.id]:
-        adjacency_list[uid] = []
+progress = 1
+total = len(adjacency_list[target_info.id])
+for uid in adjacency_list[target_info.id]:
+    print("Scrapping progress: " + str(progress) + "/" + str(total))
+    adjacency_list[uid] = []
+    try:
         for page in tweepy.Cursor(api.friends_ids, id=uid).pages():
-            adjacency_list[target_info.id] += page
+            adjacency_list[uid] += page
+    except tweepy.TweepError as err:
+        print(err)
+        continue
+    progress += 1
 
-    with open('data.json', 'w') as f:
-        json.dump(adjacency_list, f, indent=4)
-
-except tweepy.TweepError as err:
-    time.sleep(300)
-    print(err)
-
-except Exception:
-    e = sys.exc_info()[0]
-    print("Error: %s" % e)
+with open('data.json', 'w') as f:
+    json.dump(adjacency_list, f, indent=4)
