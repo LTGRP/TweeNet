@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 tweepy = "*"
 networkx = "*"
+matplotlib = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.7"
