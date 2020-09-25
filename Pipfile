@@ -10,6 +10,7 @@ tweepy = "*"
 networkx = "*"
 matplotlib = "*"
 pandas = "*"
+click = "*"
 
 [requires]
 python_version = "3.7"
