@@ -5,7 +5,7 @@ from collections import Counter
 from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition,
                                                   mark_inset)
 # Load SpaceX's Directed Graph 
-graph = nx.read_gml('gml/spacex.gml')
+graph = nx.read_gml('./gml/spacex.gml')
 
 '''
 Step 2: Degree distribution histogram
@@ -59,7 +59,7 @@ ax3.set_yticks(ticks=[0,100,200,300,400])
 ax3.tick_params(axis='both',labelsize=12)
 
 #plt.show()
-plt.savefig('degree_dist_max_twin_2')
+plt.savefig('./graphs/degree_dist_max_twin_2')
 
 '''
 Step 3: Additional network measures
@@ -103,7 +103,7 @@ except:
     be_sorted = None
 #print(dict(list(be_sorted.items())[0:5]))
 
-with open('measures_un.json','w') as f:
+with open('./measures/measures_un.json','w') as f:
     json.dump({'clustering coef': cl_coef_sorted, 
                 'pagerank': pr_sorted, 
                 'diameter': dia, 

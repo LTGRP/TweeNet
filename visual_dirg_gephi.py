@@ -6,7 +6,7 @@ from collections import Counter
 from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition,
                                                   mark_inset)
 # Load SpaceX's Directed Graph
-data = pd.read_csv('data/network_measure_data.csv', index_col = 'Id')
+data = pd.read_csv('./measures/network_measure_data.csv', index_col = 'Id')
 #print(data.columns)
 '''
 Step 2: Degree distribution histogram [same as networkx]
@@ -245,7 +245,7 @@ except:
     be_sorted = None
 #print(dict(list(be_sorted.items())[0:5]))
 
-with open('measures_gephi.json','w') as f:
+with open('./measures/measures_gephi.json','w') as f:
     json.dump({'clustering coef': cl_coef_sorted, 
                 'pagerank': pr_sorted, 
                 'diameter': dia, 
