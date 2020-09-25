@@ -6,7 +6,7 @@ from collections import Counter
 from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition,
                                                   mark_inset)
 # Load SpaceX's Directed Graph
-data = pd.read_csv('network_measure_data/network_measure_data.csv', index_col = 'Id')
+data = pd.read_csv('data/network_measure_data.csv', index_col = 'Id')
 #print(data.columns)
 '''
 Step 2: Degree distribution histogram [same as networkx]
