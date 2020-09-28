@@ -26,6 +26,7 @@ Options:
   -f, --filename TEXT  filename of output data  [default: data.json]
   --help               Show this message and exit.
 ```
+To show visualization, please make sure the file /measures/network_measure_data.csv is in your local file system, and run visual_dirg_gephi.py.
 
 ## Preview
 ![Example](/graphs/spacex-visual.gif)
